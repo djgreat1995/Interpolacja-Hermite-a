@@ -1,0 +1,89 @@
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h1 class="display-4">Interpolacja Hermite'a</h1>
+  </div>
+</div>
+
+<div class="container hermit">
+  <form #form="ngForm" *ngIf="!multiplicity.length">
+    <div class="form-group">
+      <label for="exampleInputEmail1">Liczba węzłów</label>
+      <input type="number" class="form-control" name="nodes" placeholder="Wpisz liczbę węzłów" [(ngModel)]="nodes" pattern="[0-9]+"
+        required>
+    </div>
+    <button type="button" class="btn btn-primary" (click)="generateFolds()" [disabled]="form.invalid">Dalej</button>
+  </form>
+
+  <form #foldForm="ngForm" *ngIf="multiplicity.length && !hermitTable.length">
+    <div class="form-group" *ngFor="let oneMultiplicity of multiplicity; let i = index">
+      <div class="row">
+        <div class="col-md-4">
+          <input type="number" class="form-control" name="x+i" placeholder="Wpisz x" [(ngModel)]="oneMultiplicity.x">
+        </div>
+        <div class="col-md-4">
+          <input type="number" class="form-control" name="y+i" placeholder="Wpisz y" [(ngModel)]="oneMultiplicity.y">
+        </div>
+        <div class="col-md-4">
+          <input type="number" class="form-control" name="oneMultiplicity +i" placeholder="Wpisz krotność" [(ngModel)]="oneMultiplicity.fold">
+        </div>
+      </div>
+    </div>
+    <button type="button" class="btn btn-primary" (click)="generateTable()">Dalej</button>
+  </form>
+
+  <table class="table table-bordered" *ngIf="hermitTable.length">
+    <thead>
+      <tr>
+        <th class="name-width">Nazwa</th>
+        <th class="width-105">Wartość X</th>
+        <th class="width-105">Wartość Y</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of hermitTable; let i = index">
+        <td class="text-center">{{row.name}}</td>
+        <td>{{row.x}}</td>
+        <td *ngFor="let column of hermitTable;  let j = index">
+          <input type="number" [attr.name]="i +'-'+ j" class="form-control" [(ngModel)]="hermitTable[i].y[j]" [disabled]="hermitTable[i].y[j] === '--'"
+          />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="form-group">
+    <input type="text" *ngIf="hermitTable.length" class="form-control" name="x+i" placeholder="Wpisz interpolowaną funkcję" [(ngModel)]="interpolateFunction">
+  </div>
+
+  <button type="button" class="btn btn-primary" (click)="generate()" *ngIf="hermitTable.length">Generuj funkcję</button>
+
+  <div class="string-function" *ngIf="isShowFunction">
+    <span>w(x) = {{stringFunction}}</span>
+  </div>
+
+  <div class="row chart" *ngIf="isShowFunction">
+    <div class="col-md-6">
+      <div style="display: block;">
+        <canvas baseChart width="400" height="400" [datasets]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions"
+          [legend]="lineChartLegend" [chartType]="lineChartType">
+        </canvas>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <table class="table table-responsive table-condensed">
+        <thead>
+          <tr>
+            <th *ngFor="let label of lineChartLabels">{{label}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let d of lineChartData">
+            <td *ngFor="let value of d.data">{{value}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
