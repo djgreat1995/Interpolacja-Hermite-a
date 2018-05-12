@@ -23,7 +23,7 @@
           <input type="number" class="form-control" name="y+i" placeholder="Wpisz y" [(ngModel)]="oneMultiplicity.y" required>
         </div>
         <div class="col-md-4">
-          <input type="number" class="form-control" name="oneMultiplicity +i" placeholder="Wpisz krotność" [(ngModel)]="oneMultiplicity.fold" pattern="[0-9]+" required>
+          <input type="number" step="1" min="0" class="form-control" name="oneMultiplicity +i" placeholder="Wpisz krotność" [(ngModel)]="oneMultiplicity.fold" pattern="[0-9]+" required>
         </div>
       </div>
     </div>

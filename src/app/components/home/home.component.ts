@@ -45,13 +45,13 @@ export class HomeComponent {
     this.functionStep = 0.5;
 
     // Example 1: https://www.youtube.com/watch?v=Gn0S-pYXiw0
-    this.nodes = 3;
+    /*this.nodes = 3;
     this.multiplicity = [
       {fold: 3, name: "x1", x: -1, y: 9, derivatives: [9, -19, 44]}, 
       {fold: 2, name: "x2", x: 1, y: 3, derivatives: [3, 1]},
       {fold: 1, name: "x3", x: 2, y: 15, derivatives: [15]}
     ];
-    this.hasFolds = true;
+    this.hasFolds = true;*/
 
     // Example 2: https://en.wikipedia.org/wiki/Hermite_interpolation#Example
     /*this.nodes = 3;
