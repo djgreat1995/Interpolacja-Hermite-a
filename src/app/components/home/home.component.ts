@@ -37,12 +37,40 @@ export class HomeComponent {
   public lineChartLegend = true;
 
   constructor() {
-    this.nodes = 2;
+    // Example 1: https://www.youtube.com/watch?v=Gn0S-pYXiw0
+    /*this.nodes = 3;
+    this.multiplicity = [
+      {fold: 3, name: "x1", x: -1, y: 9, derivatives: [9, -19, 44]}, 
+      {fold: 2, name: "x2", x: 1, y: 3, derivatives: [3, 1]},
+      {fold: 1, name: "x3", x: 2, y: 15, derivatives: [15]}
+    ];
+    this.hasFolds = true;*/
+
+    // Example 2: https://en.wikipedia.org/wiki/Hermite_interpolation#Example
+    /*this.nodes = 3;
+    this.multiplicity = [
+      {fold: 3, name: "x1", x: -1, y: 2, derivatives: [2, -8, 56]}, 
+      {fold: 3, name: "x2", x: 0, y: 1, derivatives: [1, 0, 0]},
+      {fold: 3, name: "x3", x: 1, y: 2, derivatives: [2, 8, 56]}
+    ];
+    this.hasFolds = true;*/
+
+    // Example 3: https://pl.wikipedia.org/wiki/Interpolacja_Hermite%E2%80%99a#Przyk%C5%82ad
+    /*this.nodes = 2;
     this.multiplicity = [
       {fold: 2, name: "x1", x: 1, y: 3, derivatives: [3, 2]}, 
-      {fold: 2, name: "x2", x: 3, y: 5, derivatives: [5, 6]}
+      {fold: 2, name: "x2", x: 3, y: 5, derivatives: [5, 6]},
     ];
-    this.hasFolds = true;
+    this.hasFolds = true;*/
+
+    // Example 4: http://www.kosiorowski.edu.pl/wp-content/uploads/2016/11/6.-Interpolacja-wielomianowa.pdf
+    /*this.nodes = 3;
+    this.multiplicity = [
+      {fold: 2, name: "x1", x: -1, y: -8, derivatives: [-8, 12]}, 
+      {fold: 2, name: "x2", x: 0, y: -2, derivatives: [-2, 1]},
+      {fold: 2, name: "x3", x: 1, y: -4, derivatives: [-4, -2]}
+    ];
+    this.hasFolds = true;*/
   }
 
   generateFolds = () => {
@@ -62,19 +90,19 @@ export class HomeComponent {
 
   fillHermitTable = (tableSize) => {
     let factorial = 1;
-    debugger;
+
     for (let col = 1; col < tableSize; col++) {
       factorial *= col;
 
       for (let row = col; row < tableSize; row++) {
-        // tu może być problem z zaokrągleniem
         let nominator = this.hermitTable[row].y[col-1] - this.hermitTable[row-1].y[col-1];
-        let denominator = this.hermitTable[row].x - this.hermitTable[row-col].x;//this.hermitTable[row-1].x;
+        let denominator = this.hermitTable[row].x - this.hermitTable[row-col].x;
 
         let result = 0;
-        if(denominator == 0) {
-          let multiplicityIndex = this.hermitTable[row].multiplicityIndex;
-          result = this.multiplicity[multiplicityIndex].derivatives[col] / factorial;
+
+        if(this.hermitTable[row].needsDerivative[col]) {
+          let multiplicityRow = this.multiplicity[ this.hermitTable[row].indexInMultiplicity ];
+          result = multiplicityRow.derivatives[col] / factorial;
         }
         else {
           result = nominator / denominator;
@@ -94,19 +122,18 @@ export class HomeComponent {
 
     let firstDisabledField = 1;
 
-    for(let mi = 0; mi < this.multiplicity.length; mi++)
-    {
-      let n = this.multiplicity[mi];
+    this.multiplicity.forEach( (n, index) => {
       for (let i = 0; i < n.fold; i++) {
         this.hermitTable = [...this.hermitTable, {
-          multiplicityIndex: mi,
+          indexInMultiplicity: index,
           name: n.name,
           x: n.x,
-          y: new Array(tableSize).fill(null).fill(n.y, 0, 1).fill('--', firstDisabledField, tableSize)
+          y: new Array(tableSize).fill(null).fill(n.y, 0, 1).fill('--', firstDisabledField, tableSize),
+          needsDerivative: new Array(tableSize).fill(false).fill(true, 1, i+1), // to avoid comparing float numbers
         }];
         firstDisabledField++;
       }
-    }
+    });
 
     this.fillHermitTable(tableSize);
   }
@@ -129,8 +156,6 @@ export class HomeComponent {
       iloczyn = 1;
       wynik += sumaE;
     }
-
-
 
     return wynik;
   }
