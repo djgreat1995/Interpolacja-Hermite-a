@@ -14,8 +14,11 @@ export class HomeComponent {
   public multiplicity: any[] = [];
   public hermitTable: any[] = [];
   public interpolateFunction = '';
-  public functionInterval = [-1, -0.5,
-      0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5];
+
+  public functionStart: number;
+  public functionStop: number;
+  public functionStep: number;
+  public functionInterval: any[] = [];
 
   public hasFolds = false;
 
@@ -37,14 +40,18 @@ export class HomeComponent {
   public lineChartLegend = true;
 
   constructor() {
+    this.functionStart = -1;
+    this.functionStop = 5;
+    this.functionStep = 0.5;
+
     // Example 1: https://www.youtube.com/watch?v=Gn0S-pYXiw0
-    /*this.nodes = 3;
+    this.nodes = 3;
     this.multiplicity = [
       {fold: 3, name: "x1", x: -1, y: 9, derivatives: [9, -19, 44]}, 
       {fold: 2, name: "x2", x: 1, y: 3, derivatives: [3, 1]},
       {fold: 1, name: "x3", x: 2, y: 15, derivatives: [15]}
     ];
-    this.hasFolds = true;*/
+    this.hasFolds = true;
 
     // Example 2: https://en.wikipedia.org/wiki/Hermite_interpolation#Example
     /*this.nodes = 3;
@@ -95,9 +102,6 @@ export class HomeComponent {
       factorial *= col;
 
       for (let row = col; row < tableSize; row++) {
-        let nominator = this.hermitTable[row].y[col-1] - this.hermitTable[row-1].y[col-1];
-        let denominator = this.hermitTable[row].x - this.hermitTable[row-col].x;
-
         let result = 0;
 
         if(this.hermitTable[row].needsDerivative[col]) {
@@ -105,6 +109,8 @@ export class HomeComponent {
           result = multiplicityRow.derivatives[col] / factorial;
         }
         else {
+          let nominator = this.hermitTable[row].y[col-1] - this.hermitTable[row-1].y[col-1];
+          let denominator = this.hermitTable[row].x - this.hermitTable[row-col].x;
           result = nominator / denominator;
         }
 
@@ -188,7 +194,19 @@ export class HomeComponent {
     return simplified.eval({ x });
   }
 
+  createFunctionInterval = () => {
+    this.functionInterval = [];
+    let currentPoint = this.functionStart;
+    while(currentPoint <= this.functionStop)
+    {
+      this.functionInterval.push(currentPoint);
+      currentPoint += this.functionStep;
+    }
+  }
+
   generate = () => {
+    this.createFunctionInterval();
+
     this.isShowFunction = true;
     this.lineChartLabels = [];
     this.lineChartData[0].data = [];

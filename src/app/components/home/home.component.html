@@ -66,8 +66,29 @@
     </tbody>
   </table>
 
-  <div class="form-group">
-    <input type="text" *ngIf="hermitTable.length" class="form-control" name="x+i" placeholder="Wpisz interpolowaną funkcję" [(ngModel)]="interpolateFunction">
+  <div class="form-group" *ngIf="hermitTable.length">
+    <hr>
+    <div class="row">
+      <div class="col-md-4">
+        <label for="functionStart">Początek wykresu</label>
+        <input type="number" step="0.5" id="functionStart" class="form-control" name="functionStart" placeholder="Wpisz punkt startu" [(ngModel)]="functionStart">
+      </div>
+      <div class="col-md-4">
+        <label for="functionStop">Koniec wykresu</label>
+        <input type="number" step="0.5" id="functionStop" class="form-control" name="functionStop" placeholder="Wpisz punkt stopu" [(ngModel)]="functionStop">
+      </div>
+      <div class="col-md-4">
+        <label for="functionStep">Krok osi x</label>
+        <input type="number" step="0.5" min="0" id="functionStep" class="form-control" name="functionStep" placeholder="Wpisz krok osi x" [(ngModel)]="functionStep">
+      </div>
+    </div>
+    <hr>
+    <div class="row">
+      <div class="col-md-12">
+        <label for="interpolateFunction">Interpolowana funkcja</label>
+        <input type="text" id="interpolateFunction" class="form-control" name="x+i" placeholder="Wpisz interpolowaną funkcję" [(ngModel)]="interpolateFunction">
+      </div>
+    </div>
   </div>
 
   <button type="button" class="btn btn-primary" (click)="generate()" *ngIf="hermitTable.length">Generuj funkcję</button>
