@@ -17,6 +17,8 @@ export class HomeComponent {
   public functionInterval = [-1, -0.5,
       0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5];
 
+  public hasFolds = false;
+
   public  stringFunction = '';
 
   public isShowFunction = false;
@@ -34,11 +36,52 @@ export class HomeComponent {
 
   public lineChartLegend = true;
 
-  constructor() { }
+  constructor() {
+    this.nodes = 2;
+    this.multiplicity = [
+      {fold: 2, name: "x1", x: 1, y: 3, derivatives: [3, 2]}, 
+      {fold: 2, name: "x2", x: 3, y: 5, derivatives: [5, 6]}
+    ];
+    this.hasFolds = true;
+  }
 
   generateFolds = () => {
     for (let i = 0; i < this.nodes; i++) {
       this.multiplicity = [...this.multiplicity, { name: `x${i + 1}`, fold: null }];
+    }
+  }
+
+  getDerivatives = () => {
+    this.multiplicity.forEach(n => {
+      n.derivatives = new Array(n.fold).fill(null);
+      n.derivatives[0] = n.y;
+    });
+
+    this.hasFolds = true;
+  }
+
+  fillHermitTable = (tableSize) => {
+    let factorial = 1;
+    debugger;
+    for (let col = 1; col < tableSize; col++) {
+      factorial *= col;
+
+      for (let row = col; row < tableSize; row++) {
+        // tu może być problem z zaokrągleniem
+        let nominator = this.hermitTable[row].y[col-1] - this.hermitTable[row-1].y[col-1];
+        let denominator = this.hermitTable[row].x - this.hermitTable[row-col].x;//this.hermitTable[row-1].x;
+
+        let result = 0;
+        if(denominator == 0) {
+          let multiplicityIndex = this.hermitTable[row].multiplicityIndex;
+          result = this.multiplicity[multiplicityIndex].derivatives[col] / factorial;
+        }
+        else {
+          result = nominator / denominator;
+        }
+
+        this.hermitTable[row].y[col] = result;
+      }
     }
   }
 
@@ -49,18 +92,23 @@ export class HomeComponent {
       tableSize += n.fold;
     });
 
-    let test = 1;
+    let firstDisabledField = 1;
 
-    this.multiplicity.forEach(n => {
+    for(let mi = 0; mi < this.multiplicity.length; mi++)
+    {
+      let n = this.multiplicity[mi];
       for (let i = 0; i < n.fold; i++) {
         this.hermitTable = [...this.hermitTable, {
+          multiplicityIndex: mi,
           name: n.name,
           x: n.x,
-          y: new Array(tableSize).fill(null).fill(n.y, 0, 1).fill('--', test, tableSize)
+          y: new Array(tableSize).fill(null).fill(n.y, 0, 1).fill('--', firstDisabledField, tableSize)
         }];
-        test++;
+        firstDisabledField++;
       }
-    });
+    }
+
+    this.fillHermitTable(tableSize);
   }
 
   calculate = (x: number) => {
@@ -81,6 +129,8 @@ export class HomeComponent {
       iloczyn = 1;
       wynik += sumaE;
     }
+
+
 
     return wynik;
   }
