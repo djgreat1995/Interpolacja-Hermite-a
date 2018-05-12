@@ -8,28 +8,56 @@
   <form #form="ngForm" *ngIf="!multiplicity.length">
     <div class="form-group">
       <label for="exampleInputEmail1">Liczba węzłów</label>
-      <input type="number" class="form-control" name="nodes" placeholder="Wpisz liczbę węzłów" [(ngModel)]="nodes" pattern="[0-9]+"
-        required>
+      <input type="number" class="form-control" name="nodes" placeholder="Wpisz liczbę węzłów"
+       [(ngModel)]="nodes" pattern="[0-9]+" required>
     </div>
-    <button type="button" class="btn btn-primary" (click)="generateFolds()" [disabled]="form.invalid">Dalej</button>
+    <button type="button" class="btn btn-primary" (click)="generateFolds()"
+     [disabled]="form.invalid">Dalej</button>
   </form>
 
-  <form #foldForm="ngForm" *ngIf="multiplicity.length && !hermitTable.length">
+  <form #foldForm="ngForm" *ngIf="multiplicity.length && !hermitTable.length  && !hasFolds">
     <div class="form-group" *ngFor="let oneMultiplicity of multiplicity; let i = index">
       <div class="row">
         <div class="col-md-4">
-          <input type="number" class="form-control" name="x+i" placeholder="Wpisz x" [(ngModel)]="oneMultiplicity.x">
+          <input type="number" class="form-control" name="x+i" placeholder="Wpisz x"
+          [(ngModel)]="oneMultiplicity.x" required>
         </div>
         <div class="col-md-4">
-          <input type="number" class="form-control" name="y+i" placeholder="Wpisz y" [(ngModel)]="oneMultiplicity.y">
+          <input type="number" class="form-control" name="y+i" placeholder="Wpisz y"
+          [(ngModel)]="oneMultiplicity.y" required>
         </div>
         <div class="col-md-4">
-          <input type="number" class="form-control" name="oneMultiplicity +i" placeholder="Wpisz krotność" [(ngModel)]="oneMultiplicity.fold">
+          <input type="number" class="form-control" name="oneMultiplicity +i" placeholder="Wpisz krotność" 
+          [(ngModel)]="oneMultiplicity.fold" pattern="[0-9]+" required>
         </div>
       </div>
     </div>
-    <button type="button" class="btn btn-primary" (click)="generateTable()">Dalej</button>
+    <!-- <button type="button" class="btn btn-primary" (click)="generateTable()">Dalej</button> -->
+    <!-- potrzebne zabezpieczenie -->
+    <button type="button" class="btn btn-primary" (click)="getDerivatives()">Dalej</button>
   </form>
+
+  <div *ngIf="multiplicity.length && !hermitTable.length && hasFolds">
+    <table class="table table-bordered" *ngFor="let oneMultiplicity of multiplicity; let i = index">
+      <thead>
+        <tr>
+          <th class="name-width">Pochodne dla {{ oneMultiplicity.name }}</th>
+        </tr>
+      </thead>
+      <tr *ngFor="let derivative of oneMultiplicity.derivatives; let j = index">
+        <td>
+          <input
+            type="number"
+            [attr.name]="i +'--'+ j"
+            class="form-control"
+            [(ngModel)]="multiplicity[i].derivatives[j]"
+            [disabled]="j === 0"
+          >
+        </td>
+      </tr>
+    </table>
+    <button type="button" class="btn btn-primary" (click)="generateTable()">Dalej</button>
+  </div>
 
   <table class="table table-bordered" *ngIf="hermitTable.length">
     <thead>
@@ -44,8 +72,7 @@
         <td class="text-center">{{row.name}}</td>
         <td>{{row.x}}</td>
         <td *ngFor="let column of hermitTable;  let j = index">
-          <input type="number" [attr.name]="i +'-'+ j" class="form-control" [(ngModel)]="hermitTable[i].y[j]" [disabled]="hermitTable[i].y[j] === '--'"
-          />
+          <input type="number" [attr.name]="i +'-'+ j" class="form-control" [(ngModel)]="hermitTable[i].y[j]" [disabled]="hermitTable[i].y[j] === '--'" />
         </td>
       </tr>
     </tbody>
@@ -64,7 +91,8 @@
   <div class="row chart" *ngIf="isShowFunction">
     <div class="col-md-6">
       <div style="display: block;">
-        <canvas baseChart width="400" height="400" [datasets]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions"
+        <canvas baseChart width="400" height="400" [datasets]="lineChartData"
+          [labels]="lineChartLabels" [options]="lineChartOptions"
           [legend]="lineChartLegend" [chartType]="lineChartType">
         </canvas>
       </div>
