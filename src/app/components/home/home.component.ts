@@ -176,7 +176,16 @@ export class HomeComponent {
 
       if (i - 1 >= 0) {
         for (let j = 0; j <= i - 1; j++) {
-          iloczyn = `${iloczyn.toString()} * (x - ${this.hermitTable[j].x})`;
+
+          let temp = this.hermitTable[j].x;
+          if(temp < 0) {
+            iloczyn = `${iloczyn.toString()} * (x + ${Math.abs(this.hermitTable[j].x)})`;
+          } else if(temp == 0) {
+            iloczyn = `${iloczyn.toString()} * x`;
+          } else {
+            iloczyn = `${iloczyn.toString()} * (x - ${this.hermitTable[j].x})`;
+          }
+          
         }
       }
 
