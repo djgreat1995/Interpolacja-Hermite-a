@@ -45,13 +45,13 @@ export class HomeComponent {
     this.functionStep = 0.5;
 
     // Example 1: https://www.youtube.com/watch?v=Gn0S-pYXiw0
-    /*this.nodes = 3;
+    this.nodes = 3;
     this.multiplicity = [
       {fold: 3, name: "x1", x: -1, y: 9, derivatives: [9, -19, 44]}, 
       {fold: 2, name: "x2", x: 1, y: 3, derivatives: [3, 1]},
       {fold: 1, name: "x3", x: 2, y: 15, derivatives: [15]}
     ];
-    this.hasFolds = true;*/
+    this.hasFolds = true;
 
     // Example 2: https://en.wikipedia.org/wiki/Hermite_interpolation#Example
     /*this.nodes = 3;
@@ -172,20 +172,27 @@ export class HomeComponent {
     let wynik = '0';
 
     for (let i = 0; i < this.hermitTable.length; i++) {
-      sumaE = `${this.hermitTable[i].y[i]}`;
+      let tempSumaE = this.hermitTable[i].y[i];
+      if(tempSumaE < 0) {
+        sumaE = `(${tempSumaE})`;
+      } else if(tempSumaE == 0) {
+        sumaE = ``;
+      } else {
+        sumaE = `${tempSumaE}`;
+      }
 
       if (i - 1 >= 0) {
         for (let j = 0; j <= i - 1; j++) {
 
-          let temp = this.hermitTable[j].x;
-          if(temp < 0) {
-            iloczyn = `${iloczyn.toString()} * (x + ${Math.abs(this.hermitTable[j].x)})`;
-          } else if(temp == 0) {
+          let tempIloczyn = this.hermitTable[j].x;
+          if(tempIloczyn < 0) {
+            iloczyn = `${iloczyn.toString()} * (x + ${Math.abs(tempIloczyn)})`;
+          } else if(tempIloczyn == 0) {
             iloczyn = `${iloczyn.toString()} * x`;
           } else {
-            iloczyn = `${iloczyn.toString()} * (x - ${this.hermitTable[j].x})`;
+            iloczyn = `${iloczyn.toString()} * (x - ${tempIloczyn})`;
           }
-          
+
         }
       }
 
