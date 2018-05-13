@@ -175,8 +175,6 @@ export class HomeComponent {
       let tempSumaE = this.hermitTable[i].y[i];
       if(tempSumaE < 0) {
         sumaE = `(${tempSumaE})`;
-      } else if(tempSumaE == 0) {
-        sumaE = ``;
       } else {
         sumaE = `${tempSumaE}`;
       }
