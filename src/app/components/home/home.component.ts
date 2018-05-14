@@ -95,7 +95,7 @@ export class HomeComponent {
     this.hasFolds = true;
   }
 
-  fillHermitTable = (tableSize) => {
+  fillHermitTable = (tableSize: number) => {
     let factorial = 1;
 
     for (let col = 1; col < tableSize; col++) {
