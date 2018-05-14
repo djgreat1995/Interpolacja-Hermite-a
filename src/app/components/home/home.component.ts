@@ -47,7 +47,7 @@ export class HomeComponent {
     // Example 1: https://www.youtube.com/watch?v=Gn0S-pYXiw0
     /*this.nodes = 3;
     this.multiplicity = [
-      {fold: 3, name: "x1", x: -1, y: 9, derivatives: [9, -19, 44]}, 
+      {fold: 3, name: "x1", x: -1, y: 9, derivatives: [9, -19, 44]},
       {fold: 2, name: "x2", x: 1, y: 3, derivatives: [3, 1]},
       {fold: 1, name: "x3", x: 2, y: 15, derivatives: [15]}
     ];
@@ -56,7 +56,7 @@ export class HomeComponent {
     // Example 2: https://en.wikipedia.org/wiki/Hermite_interpolation#Example
     /*this.nodes = 3;
     this.multiplicity = [
-      {fold: 3, name: "x1", x: -1, y: 2, derivatives: [2, -8, 56]}, 
+      {fold: 3, name: "x1", x: -1, y: 2, derivatives: [2, -8, 56]},
       {fold: 3, name: "x2", x: 0, y: 1, derivatives: [1, 0, 0]},
       {fold: 3, name: "x3", x: 1, y: 2, derivatives: [2, 8, 56]}
     ];
@@ -65,7 +65,7 @@ export class HomeComponent {
     // Example 3: https://pl.wikipedia.org/wiki/Interpolacja_Hermite%E2%80%99a#Przyk%C5%82ad
     /*this.nodes = 2;
     this.multiplicity = [
-      {fold: 2, name: "x1", x: 1, y: 3, derivatives: [3, 2]}, 
+      {fold: 2, name: "x1", x: 1, y: 3, derivatives: [3, 2]},
       {fold: 2, name: "x2", x: 3, y: 5, derivatives: [5, 6]},
     ];
     this.hasFolds = true;*/
@@ -73,11 +73,15 @@ export class HomeComponent {
     // Example 4: http://www.kosiorowski.edu.pl/wp-content/uploads/2016/11/6.-Interpolacja-wielomianowa.pdf
     /*this.nodes = 3;
     this.multiplicity = [
-      {fold: 2, name: "x1", x: -1, y: -8, derivatives: [-8, 12]}, 
+      {fold: 2, name: "x1", x: -1, y: -8, derivatives: [-8, 12]},
       {fold: 2, name: "x2", x: 0, y: -2, derivatives: [-2, 1]},
       {fold: 2, name: "x3", x: 1, y: -4, derivatives: [-4, -2]}
     ];
     this.hasFolds = true;*/
+  }
+
+  trackByIndex(index: number, value: number) {
+    return index;
   }
 
   generateFolds = () => {
@@ -104,13 +108,12 @@ export class HomeComponent {
       for (let row = col; row < tableSize; row++) {
         let result = 0;
 
-        if(this.hermitTable[row].needsDerivative[col]) {
-          let multiplicityRow = this.multiplicity[ this.hermitTable[row].indexInMultiplicity ];
+        if (this.hermitTable[row].needsDerivative[col]) {
+          const multiplicityRow = this.multiplicity[ this.hermitTable[row].indexInMultiplicity ];
           result = multiplicityRow.derivatives[col] / factorial;
-        }
-        else {
-          let nominator = this.hermitTable[row].y[col-1] - this.hermitTable[row-1].y[col-1];
-          let denominator = this.hermitTable[row].x - this.hermitTable[row-col].x;
+        } else {
+          const nominator = this.hermitTable[row].y[col - 1] - this.hermitTable[row - 1].y[col - 1];
+          const denominator = this.hermitTable[row].x - this.hermitTable[row - col].x;
           result = nominator / denominator;
         }
 
@@ -135,7 +138,7 @@ export class HomeComponent {
           name: n.name,
           x: n.x,
           y: new Array(tableSize).fill(null).fill(n.y, 0, 1).fill('--', firstDisabledField, tableSize),
-          needsDerivative: new Array(tableSize).fill(false).fill(true, 1, i+1), // to avoid comparing float numbers
+          needsDerivative: new Array(tableSize).fill(false).fill(true, 1, i + 1), // to avoid comparing float numbers
         }];
         firstDisabledField++;
       }
@@ -172,8 +175,8 @@ export class HomeComponent {
     let wynik = '0';
 
     for (let i = 0; i < this.hermitTable.length; i++) {
-      let tempSumaE = this.hermitTable[i].y[i];
-      if(tempSumaE < 0) {
+      const tempSumaE = this.hermitTable[i].y[i];
+      if (tempSumaE < 0) {
         sumaE = `(${tempSumaE})`;
       } else {
         sumaE = `${tempSumaE}`;
@@ -182,10 +185,10 @@ export class HomeComponent {
       if (i - 1 >= 0) {
         for (let j = 0; j <= i - 1; j++) {
 
-          let tempIloczyn = this.hermitTable[j].x;
-          if(tempIloczyn < 0) {
+          const tempIloczyn = this.hermitTable[j].x;
+          if (tempIloczyn < 0) {
             iloczyn = `${iloczyn.toString()} * (x + ${Math.abs(tempIloczyn)})`;
-          } else if(tempIloczyn == 0) {
+          } else if (tempIloczyn === 0) {
             iloczyn = `${iloczyn.toString()} * x`;
           } else {
             iloczyn = `${iloczyn.toString()} * (x - ${tempIloczyn})`;
@@ -211,8 +214,7 @@ export class HomeComponent {
   createFunctionInterval = () => {
     this.functionInterval = [];
     let currentPoint = this.functionStart;
-    while(currentPoint <= this.functionStop)
-    {
+    while (currentPoint <= this.functionStop) {
       this.functionInterval.push(currentPoint);
       currentPoint += this.functionStep;
     }
